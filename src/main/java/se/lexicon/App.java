@@ -37,5 +37,22 @@ public class App {
         System.out.println("\n=== Active and Expiring Subscriptions ===");
         List<Subscriber> activeAndExpiring = processor.findSubscribers(all, BusinessFilters.isActiveAndExpiring());
         expiring.forEach(x-> System.out.println(x));
+
+        //Scenario 5: Deactivate Expired Free Subscribers
+        System.out.println("\n=== Deactivating Expired Free Subscribers ===");
+        SubscriberFilter expiredFree = subscriber ->
+                subscriber.getPlan() == Plan.FREE && subscriber.getMonthsRemaining() == 0;
+        processor.applyToMatching(all, expiredFree, BusinessActions.deactivateSubscriber());
+
+        //Scenario 6: Filter Subscribers by Plan
+        System.out.println("\n=== PRO Subscribers ===");
+        List<Subscriber> pro = processor.findSubscribers(all, BusinessFilters.byPlan(Plan.PRO));
+        pro.forEach(x-> System.out.println(x));
+
+        // Scenario 7: Find paid subscribers
+        System.out.println("\n=== Paying Subscribers ===");
+        List<Subscriber> paying = processor.findSubscribers(all, BusinessFilters.isPaying());
+        paying.forEach(x-> System.out.println(x));
+
     }
 }
