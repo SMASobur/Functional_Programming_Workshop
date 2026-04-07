@@ -47,6 +47,10 @@ public class Subscriber {
         this.monthsRemaining = monthsRemaining;
     }
 
+    public void extendSubscription(int months) {
+        this.monthsRemaining += months;
+    }
+
     @Override
     public String toString() {
         return "Subscriber{" +
