@@ -1,3 +1,12 @@
+/*
+* Why I use Map and AtomicInteger?
+
+Map<Integer, Subscriber> for O(1) lookup by ID
+
+AtomicInteger for thread-safe ID generation
+
+Returns Optional for findById to handle "not found" case gracefully
+* */
 package se.lexicon;
 
 import java.util.*;
