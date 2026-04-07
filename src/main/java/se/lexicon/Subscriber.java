@@ -7,7 +7,7 @@ public class Subscriber {
     private boolean active;
     private int monthsRemaining;
 
-    public Subscriber(boolean active, String email, int id, int monthsRemaining, Plan plan) {
+    public Subscriber(int id, String email, Plan plan, boolean active, int monthsRemaining) {
         this.active = active;
         this.email = email;
         this.id = id;
