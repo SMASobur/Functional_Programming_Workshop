@@ -35,9 +35,13 @@ public class SubscriberProcessorTest {
         // Save all to DAO
         testSubscribers.forEach(dao::save);
     }
+
+
+    /*JUnit tests for Scenario 1: Show Active Subscribers*/
     @Nested
     @DisplayName("Scenario 1: Show Active Subscribers")
     class ActiveSubscribersTests{
+
         @Test
         @DisplayName( "Should find all active subscribers")
         void shouldFindActiveSubscribers(){
@@ -66,9 +70,36 @@ public class SubscriberProcessorTest {
             assertFalse(activeEmails.contains("shanmu@email.com"));
             assertFalse(activeEmails.contains("shanmu1@email.com"));
 
-
-
         }
     }
+
+
+    /*JUnit tests for Scenario 2: Show Expiring Subscriptions */
+    @Nested
+    @DisplayName("Scenario 2: Show Expiring Subscriptions")
+    class ExpiringSubscriptionsTests{
+        @Test
+        @DisplayName("Should display subscribers with 0 or 1 month remaining")
+        void shouldShowExpiringSubscribers(){
+            List<Subscriber> all = dao.findAll();
+            List<Subscriber> expiring = processor.findSubscribers(all, BusinessFilters.isExpiring());
+
+            assertEquals(4, expiring.size(), "Should have 4 expiring subscribers");
+
+            // Verify 0 or 1 month remaining
+            assertTrue(expiring.stream().allMatch(s -> s.getMonthsRemaining() <= 1));
+            // Verify specific expiring subscribers
+            List<String> expiringEmails = expiring.stream()
+                    .map(Subscriber::getEmail)
+                    .toList();
+            assertAll("Expiring subscribers should include",
+                    () -> assertTrue(expiringEmails.contains("ragavi@email.com"), "0 months remaining"));
+            // Verify non-expiring subscribers are NOT included
+            assertFalse(expiringEmails.contains("sikdar@email.com"));
+        }
+    }
+
+
+
 
 }
