@@ -99,7 +99,32 @@ public class SubscriberProcessorTest {
         }
     }
 
+    /*JUnit tests for Scenario 3: Show Active and Expiring Subscribers */
 
+    @Nested
+    @DisplayName("Scenario 3: Show Active and Expiring Subscribers")
+    class ActiveAndExpiringTests{
+        @Test
+        @DisplayName("Should display active subscribers with expiring subscriptions")
+        void shouldShowActiveAndExpiringSubscribers(){
+            List<Subscriber> all = dao.findAll();
+            List<Subscriber> activeAndExpiring = processor.findSubscribers(all, BusinessFilters.isActiveAndExpiring());
 
+            assertEquals(4, activeAndExpiring.size(), "Should have 4 active AND expiring subscribers");
+            // Verify each meets BOTH conditions
+            assertAll("Active and expiring validation",
+                    () -> assertTrue(activeAndExpiring.stream().allMatch(Subscriber::isActive)),
+                    () -> assertTrue(activeAndExpiring.stream().allMatch(subscriber -> subscriber.getMonthsRemaining() <= 1))
+            );
+
+            // Verify specific subscribers
+            List<String> resultEmails = activeAndExpiring.stream()
+                    .map(Subscriber::getEmail)
+                    .toList();
+
+            assertAll("Should include",
+                    () -> assertTrue(resultEmails.contains("ragavi@email.com")));
+        }
+    }
 
 }
