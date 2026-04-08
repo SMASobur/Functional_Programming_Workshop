@@ -54,5 +54,9 @@ public class App {
         List<Subscriber> paying = processor.findSubscribers(all, BusinessFilters.isPaying());
         paying.forEach(x-> System.out.println(x));
 
+        // Show final state
+        System.out.println("\n=== Final State ===");
+        dao.findAll().forEach(System.out::println);
+
     }
 }
